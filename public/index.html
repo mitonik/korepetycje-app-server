@@ -7,10 +7,21 @@
   <title>Document</title>
 </head>
 <body>
-  <form action="/users" method="post">
+  <form action="/sign_up" method="post">
     <label for="name">Name: </label><input type="text" name="name">
-    <label for="surname">Name: </label><input type="text" name="surname">
+    <label for="surname">Surname: </label><input type="text" name="surname">
+    <label for="age">Age: </label><input type="number" name="age">
+    <label for="email">Email: </label><input type="text" name="email">
+    <label for="password">Password: </label><input type="text" name="password">
     <button type="submit">Submit</button>
   </form>
+  <br>
+  <form action="/sign_in" method="post">
+    <label for="email">Email: </label><input type="text" name="email">
+    <label for="password">Password: </label><input type="text" name="password">
+    <button type="submit">Submit</button>
+  </form>
+  <script>
+  </script>
 </body>
 </html>

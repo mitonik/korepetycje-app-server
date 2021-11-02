@@ -4,6 +4,7 @@
   "private": "true",
   "dependencies": {
     "express": "^4.17.1",
+    "mongo": "^0.1.0",
     "mongoose": "^6.0.12"
   }
 }
