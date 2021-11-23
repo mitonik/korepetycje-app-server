@@ -15,7 +15,7 @@
     <button type="submit">Submit</button>
   </form>
   <script>
-    fetch('https://mitonik.net/users', {
+    fetch('http://localhost:3000/users', {
       method: 'GET'
     }).then(res => {
       console.log(JSON.parse(res.body));
