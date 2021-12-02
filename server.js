@@ -73,7 +73,7 @@ server.get('/user/:id', (req, res) => {
 
 server.post('/login', (req, res) => {
   const { email, password } = req.body;
-  const user = User.login(email, password)
+  const user = User.login(email, password).catch((err) => {console.log(err)});
   if (user) {
     const token = createToken(user._id);
     res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
