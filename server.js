@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 const server = express();
 
-mongoose.connect('mongodb://localhost:27017/korepetycje').then(() => server.listen(3000));
+mongoose.connect('mongodb://127.0.0.1:27017/korepetycje').then(() => server.listen(3000));
 
 server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
@@ -15,62 +15,45 @@ server.use(express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 server.use(cookieParser());
 
-const maxAge = 60 * 60;//24 * 60 * 60;
+const MAX_AGE = 3 * 24 * 60 * 60;
 
 const createToken = (id) => {
-  return jwt.sign({ id }, 'KSHM', { expiresIn: maxAge });
+  return jwt.sign({ id }, 'KSHM', { expiresIn: MAX_AGE });
 }
 
-server.post('/users', (req, res) => {
-  //console.log(req.body);
+server.post('/register', (req, res) => {
   const user = new User(req.body);
   user.save()
-  .then(() => {
-    const token = createToken(user._id);
-    //console.log(token);
-    res.cookie('jwt', token, { httpOnly: true, maxAge: maxAge * 1000});
-    //res.sendStatus(200).json({ user: user._id });
-    res.sendStatus(200);
-  })
-  .catch(() => {
-    //console.log(err);
-    res.sendStatus(403);
-  })
+    .then(() => {
+      const token = createToken(user._id);
+      res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+      res.sendStatus(201);
+    })
+    .catch(() => {
+      res.sendStatus(403);
+    })
 });
-/*
-server.get('/users', (req, res, next) => {
+
+server.get('/users', (req, res) => {
   const token = req.cookies.jwt;
+
   if (token) {
-    jwt.verify(token, 'KSHM', (err, decodedToken) => {
+    jwt.verify(token, 'KSHM', (err) => {
       if (err) {
-        res.locals.user = null;
-        next();
+        res.sendStatus(401)
       } else {
-        User.findById(decodedToken.id)
-        .then((result) => {
-          res.send(result);
-        })
-        .catch(() => {
-          res.sendStatus(403);
-        });
-        next();
+        User.find()
+          .then((result) => {
+            res.send(result);
+          })
+          .catch(() => {
+            res.sendStatus(404);
+          });
       }
     });
   } else {
-    res.sendStatus(403);
-    next();
+    res.sendStatus(401);
   }
-});*/
-
-server.get('/users', (req, res) => {
-  User.find()
-    .then((result) => {
-      res.send(result);
-    })
-    .catch(() => {
-      //console.log(err);
-      res.sendStatus(403);
-    });
 });
 
 server.get('/user/:id', (req, res) => {
@@ -79,7 +62,18 @@ server.get('/user/:id', (req, res) => {
       res.send(result);
     })
     .catch(() => {
-      //console.log(err);
       res.sendStatus(403);
     });
+})
+
+server.post('/login', (req, res) => {
+  const { email, password } = req.body;
+  const user = User.login(email, password)
+  if (user) {
+    const token = createToken(user._id);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: MAX_AGE * 1000 });
+    res.send('login');
+  } else {
+    console.log('error');
+  }
 })

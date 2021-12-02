@@ -1,25 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>Main</title>
 </head>
 <body>
-  <form action="/users" method="post">
-    <label for="name">Name: </label><input type="text" name="name" placeholder="John">
-    <label for="surname">Surname: </label><input type="text" name="surname" placeholder="Smith">
-    <label for="age">Age: </label><input type="number" name="age">
-    <label for="email">Email: </label><input type="email" name="email" placeholder="email@example.com">
-    <label for="password">Password: </label><input type="password" name="password">
-    <button type="submit">Submit</button>
-  </form>
-  <script>
-    fetch('http://localhost:3000/users', {
-      method: 'GET'
-    }).then(res => {
-      console.log(JSON.parse(res.body));
-    })
-  </script>
+  <nav>
+    <ol>
+      <li><a href="login.html">Login</a></li>
+      <li><a href="register.html">Register</a></li>
+    </ol>
+  </nav>
 </body>
 </html>
