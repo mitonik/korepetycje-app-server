@@ -4,10 +4,15 @@ const cors = require('cors');
 const User = require('./models/users');
 const cookieParser = require('cookie-parser');
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
+
+const HOST = process.env.HOST;
+const PORT = process.env.PORT;
+const SECRET = process.env.SECRET;
 
 const server = express();
 
-mongoose.connect('mongodb://127.0.0.1:27017/korepetycje').then(() => server.listen(3000));
+mongoose.connect(`mongodb://${HOST}:27017/korepetycje`).then(() => server.listen(PORT));
 
 server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
@@ -18,7 +23,7 @@ server.use(cookieParser());
 const MAX_AGE = 3 * 24 * 60 * 60;
 
 const createToken = (id) => {
-  return jwt.sign({ id }, 'KSHM', { expiresIn: MAX_AGE });
+  return jwt.sign({ id }, SECRET, { expiresIn: MAX_AGE });
 }
 
 server.post('/register', (req, res) => {
@@ -38,7 +43,7 @@ server.get('/users', (req, res) => {
   const token = req.cookies.jwt;
 
   if (token) {
-    jwt.verify(token, 'KSHM', (err) => {
+    jwt.verify(token, SECRET, (err) => {
       if (err) {
         res.sendStatus(401)
       } else {
