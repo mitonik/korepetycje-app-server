@@ -47,7 +47,7 @@ server.get('/users', (req, res) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        User.find()
+        User.find({}, {'_id': 1})
           .then((result) => {
             res.send(result);
           })
@@ -62,7 +62,7 @@ server.get('/users', (req, res) => {
 });
 
 server.get('/user/:id', (req, res) => {
-  User.findById(req.params.id)
+  User.findById(req.params.id, {'name': 1, "surname": 1, "age": 1, "email": 1})
     .then((result) => {
       res.send(result);
     })
