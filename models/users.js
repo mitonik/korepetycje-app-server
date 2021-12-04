@@ -53,10 +53,10 @@ userSchema.statics.login = async function(email, password) {
 
 }
 
-userSchema.post('save', function (doc, next){
+/*userSchema.post('save', function (doc, next){
   console.log('new user was created and saved', doc);
   next();
-})
+})*/
 
 const User = mongoose.model('User', userSchema);
 
