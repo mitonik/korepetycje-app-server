@@ -6,7 +6,7 @@ const SECRET = process.env.SECRET;
 const MAX_AGE = 3 * 24 * 60 * 60;
 
 const createToken = (id) => {
-  return jwt.sign({ id }, SECRET, { expiresIn: MAX_AGE });
+  return jwt.sign({ _id: id }, SECRET, { expiresIn: MAX_AGE });
 }
 
 module.exports.users_get = (req, res) => {
@@ -44,9 +44,9 @@ module.exports.user_get = (req, res) => {
 module.exports.login_post = (req, res) => {
   const { email, password } = req.body;
   const user = User.login(email, password)
-    .then(() => {
+    .then((user) => {
       const token = createToken(user._id);
-      res.json({ token });
+      res.status(200).json({ token });
     })
     .catch(() => {
       res.sendStatus(404);
@@ -69,4 +69,27 @@ module.exports.register_post = (req, res) => {
         });
     }
   })
+}
+
+module.exports.profile_get = (req, res) => {
+  const token = req.headers.authorization;
+
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decodedToken) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        console.log(decodedToken);
+        User.findById(decodedToken._id)
+        .then((result) => {
+        res.send(result);
+        })
+        .catch(() => {
+          res.sendStatus(404);
+        });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
 }

@@ -5,6 +5,7 @@ const router = Router();
 
 router.get('/users', controller.users_get);
 router.get('/user/:id', controller.user_get);
+router.get('/profile', controller.profile_get);
 router.post('/login', controller.login_post);
 router.post('/register', controller.register_post);
 

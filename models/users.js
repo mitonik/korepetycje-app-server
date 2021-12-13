@@ -40,23 +40,21 @@ userSchema.pre('save', async function (next){
   next();
 })
 
-userSchema.statics.login = async function(email, password) {
-  const user = await this.findOne({ email });
-  if (user) {
-    const auth = await bcrypt.compare(password, user.password);
-    if (auth) {
-      return user;
-    }
-    throw Error('incorrect password');
-  }
-  throw Error('incorrect email');
-
+userSchema.statics.login = (email, password) => {
+  return new Promise ( (resolve, reject) => {
+    let user = User.findOne({email})
+    .then( async (user) => {
+      let wynik = await bcrypt.compare(password, user.password);
+      if (wynik) {
+        resolve(user);
+      }
+      else {
+        reject(":(");
+      }
+    })
+    .catch(() => {reject(":(");})
+  })
 }
-
-/*userSchema.post('save', function (doc, next){
-  console.log('new user was created and saved', doc);
-  next();
-})*/
 
 const User = mongoose.model('User', userSchema);
 
