@@ -3,15 +3,9 @@ const Schema = mongoose.Schema;
 const bcrypt = require('bcrypt');
 
 const userSchema = new Schema({
-  name: {
-    type: String
-  },
-  surname: {
-    type: String
-  },
-  age: {
-    type: String
-  },
+  name: String,
+  surname: String,
+  age: String,
   email: {
     type: String,
     required: true,
@@ -23,15 +17,9 @@ const userSchema = new Schema({
     required: true,
     minLength: 3
   },
-  phone: {
-    type: String
-  },
-  img: {
-    type: String
-  },
-  description: {
-    type: String
-  },
+  phone: String,
+  img: String,
+  description: String,
 }, {timestamps: true});
 
 userSchema.pre('save', async function (next){

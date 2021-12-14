@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
+const Offer = require('../models/offer');
 
 const SECRET = process.env.SECRET;
 
@@ -18,12 +19,10 @@ module.exports.users_get = (req, res) => {
         res.sendStatus(401)
       } else {
         User.find({}, { '_id': 1 })
-          .then((result) => {
-            res.send(result);
-          })
-          .catch(() => {
-            res.sendStatus(404);
-          });
+          .limit(10)
+          .skip((req.query.p - 1)*10)
+          .then((result) => { res.send(result); })
+          .catch(() => { res.sendStatus(404); });
       }
     });
   } else {
@@ -79,7 +78,6 @@ module.exports.profile_get = (req, res) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        console.log(decodedToken);
         User.findById(decodedToken._id)
         .then((result) => {
         res.send(result);
@@ -92,4 +90,48 @@ module.exports.profile_get = (req, res) => {
   } else {
     res.sendStatus(401);
   }
+}
+
+module.exports.offers_post = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        const offer = new Offer(req.body);
+        offer.userId = decoded._id;
+        offer.save()
+          .then(() => { res.sendStatus(200) })
+          .catch(() => { res.sendStatus(400); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
+module.exports.offers_get = (req, res) => {
+  const token = req.headers.authorization;
+
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Offer.find()
+        .limit(10)
+        .skip((req.query.p - 1)*10)
+        .then((result) => { res.send(result) });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
+module.exports.offer_get = (req, res) => {
+  Offer.findById(req.params.id)
+    .then((result) => { res.send(result); })
+    .catch(() => { res.sendStatus(404); });
 }
