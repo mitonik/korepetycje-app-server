@@ -240,6 +240,15 @@
     },
     "/users": {
       "get": {
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "content": {
@@ -309,6 +318,245 @@
             "JWT": []
           }
         ]
+      }
+    },
+    "/profile": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "_id": {
+                      "type":"string"
+                    },
+                    "name": {
+                      "type":"string"
+                    },
+                    "surname": {
+                      "type":"string"
+                    },
+                    "age": {
+                      "type":"string"
+                    },
+                    "email": {
+                      "type":"string"
+                    },
+                    "password": {
+                      "type":"string"
+                    },
+                    "phone": {
+                      "type":"string"
+                    },
+                    "img": {
+                      "type":"string"
+                    },
+                    "description": {
+                      "type":"string"
+                    },
+                    "createdAt": {
+                      "type":"string",
+                      "format": "date"
+                    },
+                    "updatedAt": {
+                      "type":"string",
+                      "format": "date"
+                    },
+                    "__v": {
+                      "type":"number"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/offers": {
+      "get": {
+        "parameters": [
+          {
+            "name": "p",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "_id"
+                    ],
+                    "properties": {
+                      "_id": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Example 1": {
+                    "value": [
+                      {
+                        "_id": "61a8f4c0bfbb3c58c21de33b"
+                      },
+                      {
+                        "_id": "61a8fdb9c61748fd4cdfc916"
+                      },
+                      {
+                        "_id": "61a8fdfaa77ea401d3f8d6d6"
+                      }
+                    ]
+                  },
+                  "Example 2": {
+                    "value": [
+                      {
+                        "_id": "61a8f4c0bfbb3c58c21de33b"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "subjects": {
+                    "type": "string"
+                  },
+                  "time": {
+                    "type": "string",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
+      }
+    },
+    "/offer/{_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "_id"
+                  ],
+                  "properties": {
+                    "_id": {
+                      "type": "string"
+                    },
+                    "userId": {
+                      "type": "string"
+                    },
+                    "subjects": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "time": {
+                      "type": "string",
+                      "format": "date"
+                    },
+                    "usersInterested": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Not Found"
+                }
+              }
+            }
+          }
+        }
       }
     }
   },
