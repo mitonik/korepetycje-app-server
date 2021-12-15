@@ -119,10 +119,20 @@ module.exports.offers_get = (req, res) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        Offer.find()
-        .limit(10)
-        .skip((req.query.p - 1)*10)
-        .then((result) => { res.send(result) });
+        const query = req.query.subjects;
+        if (query) {
+          Offer.find({subjects: {$in: query }})
+            .limit(10)
+            .skip((req.query.p - 1)*10)
+            .then((result) => { res.send(result); })
+            .catch(() => {});
+        } else {
+          Offer.find()
+            .limit(10)
+            .skip((req.query.p - 1)*10)
+            .then((result) => { res.send(result); })
+            .catch(() => {});;
+        }
       }
     });
   } else {
