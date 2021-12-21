@@ -10,7 +10,16 @@ const offerSchema = new Schema({
   subjects: [
     { type: String }
   ],
-  time: Date,
+  level: [
+    { type: String }
+  ],
+  time: [ 
+    { type: Date }
+  ],
+  cities: [
+    { type: String }
+  ],
+  rating: Number,
   usersInterested: [
     { type: String }
   ],

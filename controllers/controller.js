@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/users');
 const Offer = require('../models/offer');
+const { query } = require('express');
 
 const SECRET = process.env.SECRET;
 
@@ -113,29 +114,35 @@ module.exports.offers_post = (req, res) => {
 
 module.exports.offers_get = (req, res) => {
   const token = req.headers.authorization;
-
   if (token) {
     jwt.verify(token.split(' ')[1], SECRET, (err) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        const query = req.query.subjects;
-        if (query) {
-          Offer.find({subjects: {$in: query }})
-            .limit(10)
-            .skip((req.query.p - 1)*10)
-            .then((result) => { res.send(result); })
-            .catch(() => {});
-        } else {
-          Offer.find()
-            .limit(10)
-            .skip((req.query.p - 1)*10)
-            .then((result) => { res.send(result); })
-            .catch(() => {});;
+          const query = req.query;
+          let user = Offer.find();
+          if (query.subjects) {
+            user = user.find({subjects: {$in: query.subjects}});
+          } 
+          if (query.level) {
+            user = user.find({level: {$in: query.level}});
+          }
+          if (query.time) {
+            user = user.find({time: {$in: query.time}});
+          }
+          if (query.cities) {
+            user = user.find({cities: {$in: query.cities}});
+          }
+          if (query.rating) {
+            user = user.find({rating: {$in: query.rating}});
+          }  
+          user.limit(10)
+          .skip((req.query.p - 1)*10)
+          .then((result) => { res.send(result); })
+          .catch(() => {});
         }
-      }
-    });
-  } else {
+      });
+    } else {
     res.sendStatus(401);
   }
 }
