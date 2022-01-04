@@ -3,13 +3,15 @@ const controller = require('../controllers/controller');
 
 const router = Router();
 
-router.get('/users/:p?', controller.users_get);
-router.get('/user/:id', controller.user_get);
-router.get('/profile', controller.profile_get);
-router.post('/login', controller.login_post);
-router.post('/register', controller.register_post);
-router.post('/offers', controller.offers_post);
-router.get('/offers/:p?', controller.offers_get);
-router.get('/offer/:id', controller.offer_get);
+router.get('/v1/profile', controller.profile_get);
+router.post('/v1/login', controller.login_post);
+router.get('/v1/accounts/:p?', controller.accounts_get);
+router.post('/v1/accounts', controller.accounts_post);
+router.get('/v1/account/:id', controller.account_get);
+router.get('/v1/posts/:p?', controller.posts_get);
+router.post('/v1/posts', controller.posts_post);
+router.get('/v1/post/:id', controller.post_get);
+router.delete('/v1/post/:id', controller.post_delete);
+router.put('/v1/post/:id', controller.post_put);
 
 module.exports = router;

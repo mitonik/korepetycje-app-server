@@ -2,7 +2,6 @@ const express = require('express');
 const https = require('https');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const cookieParser = require('cookie-parser');
 require('dotenv').config();
 
 const routes = require('./routes/routes');
@@ -23,7 +22,6 @@ server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
 server.use(express.static('public'));
 server.use(express.urlencoded({ extended: true }));
-server.use(cookieParser());
 
 mongoose.connect(DB_HOST)
   .then(() => {

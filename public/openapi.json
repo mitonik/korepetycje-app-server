@@ -1,0 +1,665 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Korepetycje",
+    "version": "0.0.2"
+  },
+  "servers": [
+    {
+      "url": "https://panoramx.ift.uni.wroc.pl:8888/v1",
+      "description": "Deployment"
+    },
+    {
+      "url": "https://127.0.0.1:8888/v1",
+      "description": "Local Development"
+    }
+  ],
+  "paths": {
+    "/profile": {
+      "get": {
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      }
+    },
+    "/login": {
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accountName": {
+                    "$ref": "#/components/schemas/Account/properties/accountName"
+                  },
+                  "password": {
+                    "$ref": "#/components/schemas/Account/properties/password"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/jwtToken"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/accounts": {
+      "get": {
+        "parameters": [
+          {
+            "name": "firstName",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Account/properties/firstName"
+            }
+          },
+          {
+            "name": "lastName",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Account/properties/lastName"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Account"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/jwtToken"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
+          }
+        }
+      }
+    },
+    "/account/{_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Account/properties/_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Account"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      }
+    },
+    "/posts": {
+      "get": {
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "default": 1
+            }
+          },
+          {
+            "name": "perPage",
+            "in": "query",
+            "schema": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 20,
+              "default": 10
+            }
+          },
+          {
+            "name": "ownerId",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/ownerId"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/title"
+            }
+          },
+          {
+            "name": "cities",
+            "in": "query",
+            "allowReserved": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/cities"
+            }
+          },
+          {
+            "name": "subjects",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/subjects"
+            }
+          },
+          {
+            "name": "level",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/level"
+            }
+          },
+          {
+            "name": "date",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      }
+    },
+    "/post/{_id}": {
+      "get": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Post"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      },
+      "patch": {
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Account": {
+        "type": "object",
+        "required": [
+          "_id",
+          "accountName",
+          "password",
+          "createdAt",
+          "updatedAt",
+          "__v"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "examples": [
+              "61ba0e233c7988fd9ca6ff8e"
+            ]
+          },
+          "accountName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 32,
+            "examples": [
+              "sam21",
+              "adam"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "writeOnly": true,
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "123"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "jason45@example.com"
+            ]
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "Bob",
+              "Mark",
+              "Frank"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "Smith",
+              "Freeman"
+            ]
+          },
+          "about": {
+            "type": "string",
+            "maxLength": 256,
+            "examples": [
+              "A basic about me description"
+            ]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "pattern": "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
+            "examples": [
+              "+01123456789"
+            ]
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "1987-04-24T00:00:00.000Z"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "__v": {
+            "type": "number",
+            "readOnly": true,
+            "examples": [
+              0
+            ]
+          }
+        }
+      },
+      "Post": {
+        "type": "object",
+        "required": [
+          "_id",
+          "ownerId",
+          "createdAt",
+          "updatedAt",
+          "__v"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "examples": [
+              "61ba0e233c7988fd9ca6ff8e"
+            ]
+          },
+          "ownerId": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "examples": [
+              "61ba0e233c7988fd9ca6ff8e"
+            ]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "First time teaching"
+            ]
+          },
+          "cities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "examples": [
+              [
+                "Wrocław",
+                "Paris"
+              ]
+            ]
+          },
+          "subjects": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "math",
+                "physics",
+                "biology"
+              ]
+            }
+          },
+          "level": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "basic",
+                "intermidiate",
+                "advanced"
+              ]
+            }
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "2022-01-02T11:25:01Z"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "__v": {
+            "type": "number",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          }
+        }
+      }
+    },
+    "responses": {
+      "jwtToken": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example token": {
+                "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWQ0NWVkMDY5N2I0MzM4MDAxNjk4ZWMiLCJpYXQiOjE2NDEzMDg3NzUsImV4cCI6MTY0MTU2Nzk3NX0.pzmve0bPOUJySR_CoUwJ6s7CY0skTlwONrpl2wrXbtc"
+              }
+            }
+          }
+        }
+      },
+      "200": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "OK"
+              }
+            }
+          }
+        }
+      },
+      "201": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Created"
+              }
+            }
+          }
+        }
+      },
+      "400": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Bad request"
+              }
+            }
+          }
+        }
+      },
+      "401": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Unauthorized"
+              }
+            }
+          }
+        }
+      },
+      "403": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Forbidden"
+              }
+            }
+          }
+        }
+      },
+      "404": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Not found"
+              }
+            }
+          }
+        }
+      },
+      "409": {
+        "content": {
+          "text/plain": {
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Example": {
+                "value": "Conflict"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "jwt": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
