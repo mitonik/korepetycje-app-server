@@ -102,27 +102,11 @@ module.exports.posts_get = (req, res) => {
   const page = parseInt(req.query.page, 10) || 0;
   const perPage = parseInt(req.query.perPage, 10) || 10;
 
-  let post = Post.find();
-  if (req.query.title) {
-    post = post.find({title: {$in: req.query.title}});
-  }
-  if (req.query.subjects) {
-    post = post.find({subjects: {$in: req.query.subjects}});
-  }
-  if (req.query.level) {
-    post = post.find({level: {$in: req.query.level}});
-  }
-  if (req.query.time) {
-    post = post.find({date: {$in: req.query.date}});
-  }
-  if (req.query.cities) {
-    post = post.find({cities: {$in: req.query.cities}});
-  }
-  post
-  .limit(perPage)
-  .skip(page * perPage)
-  .then((result) => { res.send(result); })
-  .catch(() => {});
+  Post.find(req.query)
+    .limit(perPage)
+    .skip(page * perPage)
+    .then(result => { res.status(200).send(result); })
+    .catch(() => { res.sendStatus(400) });
 }
 
 module.exports.post_get = (req, res) => {

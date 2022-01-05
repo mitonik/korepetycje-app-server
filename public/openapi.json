@@ -164,7 +164,7 @@
             "schema": {
               "type": "number",
               "minimum": 1,
-              "default": 1
+              "default": 0
             }
           },
           {
@@ -233,6 +233,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
           }
         }
       },
