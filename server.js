@@ -1,5 +1,5 @@
 const express = require('express');
-const https = require('https');
+const http2 = require('spdy');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
@@ -16,7 +16,7 @@ const options = {
 
 const server = express();
 
-const serverHttps = https.createServer(options, server);
+const serverHttps = http2.createServer(options, server);
 
 server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
