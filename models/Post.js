@@ -32,12 +32,13 @@ const postSchema = new Schema({
       type: String,
       enum: [
         "basic",
-        "intermidiate",
+        "intermediate",
         "advanced"
       ]
     }
   ],
-  date: Date
+  dateFrom: Date,
+  dateTo: Date
 }, { timestamps: true });
 
 const Post = mongoose.model('Post', postSchema);

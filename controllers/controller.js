@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const { request } = require('spdy');
 const Account = require('../models/Account');
 const Post = require('../models/Post');
 
@@ -17,13 +18,13 @@ module.exports.accounts_get = (req, res) => {
   Account.find({}, { 'password': 0 })
     .limit(perPage)
     .skip(page * perPage)
-    .then(result => { res.send(result) })
+    .then(result => { res.status(200).send(result); })
     .catch(() => { res.sendStatus(404); });
 }
 
 module.exports.account_get = (req, res) => {
   Account.findById(req.params.id, { 'password': 0 })
-    .then(result => { res.send(result); })
+    .then(result => { res.status(200).send(result); })
     .catch(() => { res.sendStatus(404); });
 }
 
@@ -32,14 +33,14 @@ module.exports.login_post = (req, res) => {
   Account.login(accountName, password)
     .then(user => {
       const token = createToken(user._id);
-      res.status(200).json(token);
+      res.status(200).set('Content-Type', 'plain/text').send(token);
     })
     .catch(() => {
       res.sendStatus(404);
     });
 }
 
-module.exports.accounts_post = (req, res) => {
+module.exports.register_post = (req, res) => {
   Account.exists({ accountName: req.body.accountName }).then((bool) => {
     if (bool) {
       res.sendStatus(409);
@@ -48,7 +49,7 @@ module.exports.accounts_post = (req, res) => {
       account.save()
         .then(() => {
           const token = createToken(account._id);
-          res.status(201).json(token)
+          res.status(201).set('Content-Type', 'plain/text').send(token);
         })
         .catch(() => {
           res.sendStatus(400);
@@ -89,7 +90,7 @@ module.exports.posts_post = (req, res) => {
         const post = new Post(req.body);
         post.ownerId = decoded._id;
         post.save()
-          .then(() => { res.sendStatus(200) })
+          .then(result => { res.status(200).send(result._id) })
           .catch(() => { res.sendStatus(400); });
       }
     });
@@ -101,8 +102,27 @@ module.exports.posts_post = (req, res) => {
 module.exports.posts_get = (req, res) => {
   const page = parseInt(req.query.page, 10) || 0;
   const perPage = parseInt(req.query.perPage, 10) || 10;
-
-  Post.find(req.query)
+  let query = {};
+  if (req.query.ownerId) {
+    query.ownerId = {$in: req.query.ownerId};
+  }
+  if (req.query.title) {
+    query.title = {$in: req.query.title};
+  }
+  if (req.query.cities) {
+    query.cities = {$in: req.query.cities};
+  }
+  if (req.query.subjects) {
+    query.subjects = {$in: req.query.subjects};
+  }
+  if (req.query.level) {
+    query.level = {$in: req.query.level};
+  }
+  if (req.query.dateFrom && req.query.dateTo) {
+    query.dateFrom = {$lt: req.query.dateTo};
+    query.dateTo = {$gt: req.query.dateFrom};
+  }
+  Post.find(query)
     .limit(perPage)
     .skip(page * perPage)
     .then(result => { res.status(200).send(result); })
