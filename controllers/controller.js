@@ -33,7 +33,7 @@ module.exports.login_post = (req, res) => {
   Account.login(accountName, password)
     .then(user => {
       const token = createToken(user._id);
-      res.status(200).set('Content-Type', 'plain/text').send(token);
+      res.status(200).json(token);
     })
     .catch(() => {
       res.sendStatus(404);
@@ -49,7 +49,7 @@ module.exports.register_post = (req, res) => {
       account.save()
         .then(() => {
           const token = createToken(account._id);
-          res.status(201).set('Content-Type', 'plain/text').send(token);
+          res.status(201).json(token);
         })
         .catch(() => {
           res.sendStatus(400);
