@@ -2,6 +2,7 @@ const express = require('express');
 const http2 = require('spdy');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const history = require('connect-history-api-fallback')
 require('dotenv').config();
 
 const routes = require('./routes/routes');
@@ -20,7 +21,6 @@ const serverHttps = http2.createServer(options, server);
 
 server.use(express.json());
 server.use(cors({ origin: true, credentials: true }));
-server.use(express.static('public'));
 server.use(express.urlencoded({ extended: true }));
 
 mongoose.connect(DB_HOST)
@@ -33,3 +33,5 @@ mongoose.connect(DB_HOST)
   });
 
 server.use(routes);
+server.use(history());
+server.use(express.static('public'));
