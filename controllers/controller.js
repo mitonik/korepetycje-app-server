@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const { request } = require('spdy');
 const Account = require('../models/Account');
 const Post = require('../models/Post');
+const { post } = require('../routes/routes');
 
 const SECRET = process.env.SECRET;
 
@@ -60,7 +61,6 @@ module.exports.register_post = (req, res) => {
 
 module.exports.profile_get = (req, res) => {
   const token = req.headers.authorization;
-
   if (token) {
     jwt.verify(token.split(' ')[1], SECRET, (err, decodedToken) => {
       if (err) {
@@ -68,7 +68,7 @@ module.exports.profile_get = (req, res) => {
       } else {
         Account.findById(decodedToken._id, { password: 0 })
         .then((result) => {
-        res.send(result);
+        res.status(200).send(result);
         })
         .catch(() => {
           res.sendStatus(404);
@@ -90,7 +90,7 @@ module.exports.posts_post = (req, res) => {
         const post = new Post(req.body);
         post.ownerId = decoded._id;
         post.save()
-          .then(result => { res.status(200).send(result._id) })
+          .then(result => { res.status(200).send(result._id); })
           .catch(() => { res.sendStatus(400); });
       }
     });
@@ -131,12 +131,56 @@ module.exports.posts_get = (req, res) => {
 
 module.exports.post_get = (req, res) => {
   Post.findById(req.params.id)
-    .then((result) => { res.send(result); })
+    .then((result) => { res.status(200).send(result); })
     .catch(() => { res.sendStatus(404); });
 }
 
 module.exports.post_delete = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Post.findById(req.params.id)
+        .then((result) => {
+          if(result.ownerId == decoded._id) {
+            result.delete();
+            res.sendStatus(200);
+          } else {
+            res.sendStatus(401);
+          }})
+        .catch(() => { res.sendStatus(400); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
 }
 
 module.exports.post_put = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Post.findById(req.params.id)
+        .then((result) => {
+          if(result.ownerId == decoded._id) {
+            for (const elem in req.body) {
+              result[elem] = req.body[elem];
+            }
+            result.save()
+              .then(result => { res.status(200).send(result); })
+              .catch(() => { res.sendStatus(400); });
+          } else {
+            res.sendStatus(401);
+          }})
+        .catch(() => { res.sendStatus(400); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
 }
