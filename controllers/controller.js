@@ -1,8 +1,6 @@
 const jwt = require('jsonwebtoken');
-const { request } = require('spdy');
 const Account = require('../models/Account');
 const Post = require('../models/Post');
-const { post } = require('../routes/routes');
 
 const SECRET = process.env.SECRET;
 
@@ -150,7 +148,7 @@ module.exports.post_delete = (req, res) => {
           } else {
             res.sendStatus(401);
           }})
-        .catch(() => { res.sendStatus(400); });
+        .catch(() => { res.sendStatus(404); });
       }
     });
   } else {
@@ -172,7 +170,7 @@ module.exports.post_put = (req, res) => {
               result[elem] = req.body[elem];
             }
             result.save()
-              .then(result => { res.status(200).send(result); })
+              .then(result => { res.status(200).send(result._id); })
               .catch(() => { res.sendStatus(400); });
           } else {
             res.sendStatus(401);

@@ -329,6 +329,9 @@
           "200": {
             "$ref": "#/components/responses/200"
           },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
           "404": {
             "$ref": "#/components/responses/404"
           }
@@ -339,7 +342,43 @@
           }
         ]
       },
-      "patch": {
+      "put": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/_id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Post"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Post/properties/_id"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          }
+        },
         "security": [
           {
             "jwt": []
@@ -564,7 +603,7 @@
             "type": "number",
             "readOnly": true,
             "examples": [
-              "2019-08-24T14:15:22Z"
+              0
             ]
           }
         }
