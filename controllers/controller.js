@@ -77,7 +77,7 @@ module.exports.profile_put = (req, res) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        Account.findById(decoded._id, { password: 0 })
+        Account.findById(decoded._id)
         .then((result) => {
           for (const elem in req.body) {
             result[elem] = req.body[elem];
