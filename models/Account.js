@@ -33,6 +33,7 @@ const accountSchema = new Schema({
     minLength: 1,
     maxlength: 64
   },
+  address: String,
   about: {
     type: String,
     maxlength: 256

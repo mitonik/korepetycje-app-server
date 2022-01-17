@@ -22,7 +22,7 @@ module.exports.accounts_get = (req, res) => {
 }
 
 module.exports.account_get = (req, res) => {
-  Account.findById(req.params.id, { 'password': 0 })
+  Account.findById(req.params.id, { password: 0 })
     .then(result => { res.status(200).send(result); })
     .catch(() => { res.sendStatus(404); });
 }
@@ -34,9 +34,7 @@ module.exports.login_post = (req, res) => {
       const token = createToken(user._id);
       res.status(200).json(token);
     })
-    .catch(() => {
-      res.sendStatus(404);
-    });
+    .catch(() => { res.sendStatus(404); });
 }
 
 module.exports.register_post = (req, res) => {
@@ -50,9 +48,7 @@ module.exports.register_post = (req, res) => {
           const token = createToken(account._id);
           res.status(201).json(token);
         })
-        .catch(() => {
-          res.sendStatus(400);
-        });
+        .catch(() => { res.sendStatus(400); });
     }
   })
 }
@@ -60,22 +56,42 @@ module.exports.register_post = (req, res) => {
 module.exports.profile_get = (req, res) => {
   const token = req.headers.authorization;
   if (token) {
-    jwt.verify(token.split(' ')[1], SECRET, (err, decodedToken) => {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        Account.findById(decodedToken._id, { password: 0 })
-        .then((result) => {
-        res.status(200).send(result);
-        })
-        .catch(() => {
-          res.sendStatus(404);
-        });
+        Account.findById(decoded._id, { password: 0 })
+        .then((result) => { res.status(200).send(result); })
+        .catch(() => { res.sendStatus(404); });
       }
     });
   } else {
     res.sendStatus(401);
   }
+}
+
+module.exports.profile_put = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Account.findById(decoded._id, { password: 0 })
+        .then((result) => {
+          for (const elem in req.body) {
+            result[elem] = req.body[elem];
+          }
+          result.save()
+          .then(() => { res.sendStatus(200); })
+          .catch(() => { res.sendStatus(400); });
+        })
+        .catch(() => { res.sendStatus(404); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  } 
 }
 
 module.exports.posts_post = (req, res) => {
@@ -88,8 +104,8 @@ module.exports.posts_post = (req, res) => {
         const post = new Post(req.body);
         post.ownerId = decoded._id;
         post.save()
-          .then(result => { res.status(200).send(result._id); })
-          .catch(() => { res.sendStatus(400); });
+        .then(result => { res.status(200).send(result._id); })
+        .catch(() => { res.sendStatus(400); });
       }
     });
   } else {
@@ -103,6 +119,9 @@ module.exports.posts_get = (req, res) => {
   let query = {};
   if (req.query.ownerId) {
     query.ownerId = {$in: req.query.ownerId};
+  }
+  if (req.query.price) {
+    query.price = {$lt: req.query.price};
   }
   if (req.query.title) {
     query.title = {$in: req.query.title};
@@ -120,6 +139,7 @@ module.exports.posts_get = (req, res) => {
     query.dateFrom = {$lt: req.query.dateTo};
     query.dateTo = {$gt: req.query.dateFrom};
   }
+  query.interestedIn = {$exists: false}
   Post.find(query)
     .limit(perPage)
     .skip(page * perPage)
@@ -170,15 +190,41 @@ module.exports.post_put = (req, res) => {
               result[elem] = req.body[elem];
             }
             result.save()
-              .then(result => { res.status(200).send(result._id); })
-              .catch(() => { res.sendStatus(400); });
+            .then(result => { res.status(200).send(result._id); })
+            .catch(() => { res.sendStatus(400); });
           } else {
             res.sendStatus(401);
           }})
-        .catch(() => { res.sendStatus(400); });
+        .catch(() => { res.sendStatus(404); });
       }
     });
   } else {
     res.sendStatus(401);
   }
 }
+
+module.exports.post_reservation = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Post.findById(req.params.id)
+        .then((result) => {
+          if(!result.interestedIn) {
+            result.interestedIn = decoded._id;
+            result.save()
+            .then(() => { res.sendStatus(200); })
+            .catch(() => { res.sendStatus(400); });
+          } else {
+            res.sendStatus(409);
+          }})
+        .catch(() => { res.sendStatus(404); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
