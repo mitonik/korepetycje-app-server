@@ -80,6 +80,36 @@
           },
           "401": {
             "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      },
+      "put": {
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountEdit"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
           }
         },
         "security": [
@@ -377,6 +407,42 @@
           },
           "401": {
             "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      }
+    },
+    "/reservation/{_id}": {
+      "put": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
+          },
+          "409": {
+            "$ref": "#/components/responses/409"
           }
         },
         "security": [
@@ -455,6 +521,135 @@
               "Freeman"
             ]
           },
+          "address": {
+            "type": "string",
+            "examples": [
+              "Wrocław",
+              "Poznań",
+              "London"
+            ]
+          },
+          "about": {
+            "type": "string",
+            "maxLength": 256,
+            "examples": [
+              "A basic about me description"
+            ]
+          },
+          "phoneNumber": {
+            "type": "string",
+            "pattern": "^[+]?[(]?[0-9]{3}[)]?[-s.]?[0-9]{3}[-s.]?[0-9]{4,6}$",
+            "examples": [
+              "+01123456789"
+            ]
+          },
+          "birthday": {
+            "type": "string",
+            "format": "date-time",
+            "examples": [
+              "1987-04-24T00:00:00.000Z"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true,
+            "examples": [
+              "2019-08-24T14:15:22Z"
+            ]
+          },
+          "__v": {
+            "type": "number",
+            "readOnly": true,
+            "examples": [
+              0
+            ]
+          }
+        }
+      },
+      "AccountEdit": {
+        "type": "object",
+        "required": [
+          "_id",
+          "accountName",
+          "password",
+          "createdAt",
+          "updatedAt",
+          "__v"
+        ],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "examples": [
+              "61ba0e233c7988fd9ca6ff8e"
+            ]
+          },
+          "accountName": {
+            "type": "string",
+            "readOnly": true,
+            "minLength": 1,
+            "maxLength": 32,
+            "examples": [
+              "sam21",
+              "adam"
+            ]
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "writeOnly": true,
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "123"
+            ]
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "jason45@example.com"
+            ]
+          },
+          "firstName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "Bob",
+              "Mark",
+              "Frank"
+            ]
+          },
+          "lastName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "examples": [
+              "Smith",
+              "Freeman"
+            ]
+          },
+          "address": {
+            "type": "string",
+            "examples": [
+              "Wrocław",
+              "Poznań",
+              "London"
+            ]
+          },
           "about": {
             "type": "string",
             "maxLength": 256,
@@ -527,12 +722,28 @@
               "61ba0e233c7988fd9ca6ff8e"
             ]
           },
+          "interestedIn": {
+            "type": "string",
+            "format": "uuid",
+            "readOnly": true,
+            "examples": [
+              "61ba0e233c7988fd9ca6ff8e"
+            ]
+          },
           "title": {
             "type": "string",
             "minLength": 1,
             "maxLength": 64,
             "examples": [
               "First time teaching"
+            ]
+          },
+          "price": {
+            "type": "number",
+            "examples": [
+              12,
+              7,
+              15
             ]
           },
           "cities": {
