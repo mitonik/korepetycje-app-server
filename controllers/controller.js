@@ -212,7 +212,7 @@ module.exports.post_reservation = (req, res) => {
       } else {
         Post.findById(req.params.id)
         .then((result) => {
-          if(!result.interestedIn) {
+          if(!result.interestedIn && result.ownerId != decoded._id) {
             result.interestedIn = decoded._id;
             result.save()
             .then(() => { res.sendStatus(200); })
