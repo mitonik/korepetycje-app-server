@@ -15,5 +15,6 @@ router.get('/post/:id', controller.post_get);
 router.delete('/post/:id', controller.post_delete);
 router.put('/post/:id', controller.post_put);
 router.put('/reservation/:id', controller.post_reservation);
+router.put('/dereservation/:id', controller.post_dereservation);
 
 module.exports = router;

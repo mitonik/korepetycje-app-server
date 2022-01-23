@@ -7,10 +7,12 @@ const postSchema = new Schema({
     ref: 'Account',
     required: true
   },
-  interestedIn: {
-    type: Schema.Types.ObjectId,
-    ref: 'Account'
-  },
+  interestedIn: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: 'Account'
+    }
+  ],
   title: {
     type: String,
     minLength: 1,

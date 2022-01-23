@@ -14,7 +14,7 @@ module.exports.accounts_get = (req, res) => {
   const page = parseInt(req.query.page, 10) || 0;
   const perPage = parseInt(req.query.perPage, 10) || 10;
 
-  Account.find({}, { 'password': 0 })
+  Account.find({}, { password: 0 })
     .limit(perPage)
     .skip(page * perPage)
     .then(result => { res.status(200).send(result); })
@@ -77,7 +77,7 @@ module.exports.profile_put = (req, res) => {
       if (err) {
         res.sendStatus(401)
       } else {
-        Account.findById(decoded._id)
+        Account.findById(decoded._id, { password: 0 })
         .then((result) => {
           for (const elem in req.body) {
             result[elem] = req.body[elem];
@@ -139,7 +139,14 @@ module.exports.posts_get = (req, res) => {
     query.dateFrom = {$lt: req.query.dateTo};
     query.dateTo = {$gt: req.query.dateFrom};
   }
-  query.interestedIn = {$exists: false}
+  if (req.query.interestedInBool == 1) {
+    if (req.query.interestedIn) {
+      query.interestedIn = {$in: req.query.interestedIn};
+    }
+  }
+  else {
+    query.interestedIn = {$exists: false};
+  }
   Post.find(query)
     .limit(perPage)
     .skip(page * perPage)
@@ -212,13 +219,38 @@ module.exports.post_reservation = (req, res) => {
       } else {
         Post.findById(req.params.id)
         .then((result) => {
-          if(!result.interestedIn && result.ownerId != decoded._id) {
-            result.interestedIn = decoded._id;
+          if(!result.interestedIn[0] && result.ownerId != decoded._id) {
+            result.interestedIn[0] = decoded._id;
             result.save()
             .then(() => { res.sendStatus(200); })
             .catch(() => { res.sendStatus(400); });
           } else {
-            res.sendStatus(409);
+            res.sendStatus(401);
+          }})
+        .catch(() => { res.sendStatus(404); });
+      }
+    });
+  } else {
+    res.sendStatus(401);
+  }
+}
+
+module.exports.post_dereservation = (req, res) => {
+  const token = req.headers.authorization;
+  if (token) {
+    jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
+      if (err) {
+        res.sendStatus(401)
+      } else {
+        Post.findById(req.params.id)
+        .then((result) => {
+          if(result.interestedIn[0] == decoded._id) {
+            result.interestedIn = undefined;
+            result.save()
+            .then(() => { res.sendStatus(200); })
+            .catch(() => { res.sendStatus(400); });
+          } else {
+            res.sendStatus(401);
           }})
         .catch(() => { res.sendStatus(404); });
       }
