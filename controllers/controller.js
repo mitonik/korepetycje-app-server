@@ -210,7 +210,7 @@ module.exports.post_put = (req, res) => {
   }
 }
 
-module.exports.post_reservation = (req, res) => {
+module.exports.reservation_put = (req, res) => {
   const token = req.headers.authorization;
   if (token) {
     jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {
@@ -235,7 +235,7 @@ module.exports.post_reservation = (req, res) => {
   }
 }
 
-module.exports.post_dereservation = (req, res) => {
+module.exports.reservation_delete = (req, res) => {
   const token = req.headers.authorization;
   if (token) {
     jwt.verify(token.split(' ')[1], SECRET, (err, decoded) => {

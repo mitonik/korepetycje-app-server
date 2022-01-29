@@ -263,6 +263,20 @@
             "schema": {
               "$ref": "#/components/schemas/Post/properties/dateTo"
             }
+          },
+          {
+            "name": "interestedInBool",
+            "in": "query",
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "interestedIn",
+            "in": "query",
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/interestedIn"
+            }
           }
         ],
         "responses": {
@@ -443,6 +457,37 @@
           },
           "409": {
             "$ref": "#/components/responses/409"
+          }
+        },
+        "security": [
+          {
+            "jwt": []
+          }
+        ]
+      },
+      "delete": {
+        "parameters": [
+          {
+            "name": "_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/Post/properties/_id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/200"
+          },
+          "400": {
+            "$ref": "#/components/responses/400"
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "404": {
+            "$ref": "#/components/responses/404"
           }
         },
         "security": [
