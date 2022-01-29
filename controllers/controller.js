@@ -114,7 +114,7 @@ module.exports.posts_post = (req, res) => {
 }
 
 module.exports.posts_get = (req, res) => {
-  const page = parseInt(req.query.page, 10) || 0;
+  const currentPage = parseInt(req.query.currentPage, 10) || 0;
   const perPage = parseInt(req.query.perPage, 10) || 10;
   let query = {};
   if (req.query.ownerId) {
@@ -147,10 +147,19 @@ module.exports.posts_get = (req, res) => {
   else {
     query.interestedIn = {$exists: false};
   }
+  let entireResult = {}; 
+  Post.find(query)
+    .exec((err, results) => {
+    const total = results.length;
+    const lastPage = Math.floor((total-1) / perPage);
+    entireResult.pageInfo = {'total' : total, 'perPage' : perPage, 'currentPage' : currentPage, 'lastPage' : lastPage};
+    });
   Post.find(query)
     .limit(perPage)
-    .skip(page * perPage)
-    .then(result => { res.status(200).send(result); })
+    .skip(currentPage * perPage)
+    .then(result => {
+      entireResult.posts = result;
+      res.status(200).send(entireResult); })
     .catch(() => { res.sendStatus(400) });
 }
 
