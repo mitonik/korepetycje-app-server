@@ -30,7 +30,19 @@ const postSchema = new Schema({
       enum: [
         "math",
         "physics",
-        "biology"
+        "biology",
+        "chemistry",
+        "geography",
+        "art",
+        "computer science",
+        "polish",
+        "english",
+        "german",
+        "spanish",
+        "japanese",
+        "french",
+        "russian",
+        "history"
       ]
     }
   ],
@@ -38,9 +50,10 @@ const postSchema = new Schema({
     {
       type: String,
       enum: [
-        "basic",
-        "intermediate",
-        "advanced"
+        "primary school",
+        "middle school",
+        "high school",
+        "university"
       ]
     }
   ],

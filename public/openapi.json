@@ -832,7 +832,19 @@
               "enum": [
                 "math",
                 "physics",
-                "biology"
+                "biology",
+                "chemistry",
+                "geography",
+                "art",
+                "computer science",
+                "polish",
+                "english",
+                "german",
+                "spanish",
+                "japanese",
+                "french",
+                "russian",
+                "history"
               ]
             }
           },
@@ -841,9 +853,10 @@
             "items": {
               "type": "string",
               "enum": [
-                "basic",
-                "intermediate",
-                "advanced"
+                "primary school",
+                "middle school",
+                "high school",
+                "university"
               ]
             }
           },
