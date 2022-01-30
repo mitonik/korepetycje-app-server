@@ -805,6 +805,14 @@
               "First time teaching"
             ]
           },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1024,
+            "examples": [
+              "Custom description."
+            ]
+          },
           "price": {
             "type": "number",
             "examples": [
@@ -816,14 +824,23 @@
           "cities": {
             "type": "array",
             "items": {
-              "type": "string"
-            },
-            "examples": [
-              [
+              "type": "string",
+              "enum": [
+                "Warszawa",
+                "Kraków",
                 "Wrocław",
-                "Paris"
+                "Łódź",
+                "Poznań",
+                "Gdańsk",
+                "Szczecin",
+                "Bydgoszcz",
+                "Lublin",
+                "Białystok",
+                "Katowice",
+                "Gdynia",
+                "Częstochowa"
               ]
-            ]
+            }
           },
           "subjects": {
             "type": "array",

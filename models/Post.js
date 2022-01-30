@@ -18,10 +18,30 @@ const postSchema = new Schema({
     minLength: 1,
     maxlength: 64
   },
+  description: {
+    type: String,
+    minLength: 1,
+    maxlength: 1024
+  },
   price: Number,
   cities: [
     {
-      type: String
+      type: String,
+      enum: [
+        "Warszawa",
+        "Kraków",
+        "Wrocław",
+        "Łódź",
+        "Poznań",
+        "Gdańsk",
+        "Szczecin",
+        "Bydgoszcz",
+        "Lublin",
+        "Białystok",
+        "Katowice",
+        "Gdynia",
+        "Częstochowa"
+      ]
     }
   ],
   subjects: [
