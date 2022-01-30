@@ -149,18 +149,18 @@ module.exports.posts_get = (req, res) => {
   }
   let entireResult = {}; 
   Post.find(query)
-    .exec((err, results) => {
+    .then(results => {
     const total = results.length;
     const lastPage = Math.floor((total-1) / perPage);
     entireResult.pageInfo = {'total' : total, 'perPage' : perPage, 'currentPage' : currentPage, 'lastPage' : lastPage};
-    });
+    }).then(() => {
   Post.find(query)
     .limit(perPage)
     .skip(currentPage * perPage)
     .then(result => {
       entireResult.posts = result;
       res.status(200).send(entireResult); })
-    .catch(() => { res.sendStatus(400) });
+    .catch(() => { res.sendStatus(400) })})
 }
 
 module.exports.post_get = (req, res) => {

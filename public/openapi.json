@@ -196,7 +196,7 @@
       "get": {
         "parameters": [
           {
-            "name": "page",
+            "name": "currentPage",
             "in": "query",
             "schema": {
               "type": "number",
